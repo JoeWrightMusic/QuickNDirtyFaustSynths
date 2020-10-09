@@ -1,23 +1,38 @@
 import("stdfaust.lib");
 
-f = hslider("freq",440.9,50,2000,0.01);
-vib = hslider("vib",4.5,0.001,7,0.01);
-vibWid = hslider("vibWid",0.007,0,0.05,0.01);
+//OBOE ARGUMENTS
+//choose note & define range (Bb3-Bb5)
+fund = hslider("fundFreq", 440, 223.88, 932.33, 0.1);
+vibratoHz = hslider("vibratoHz", 4, 0, 10, 0.01);
+vibratoWidth = hslider("vibratoWidth", 0.15, 0, 1, 0.01);
+
+//phasor
 phasor(freq) = (+(freq/ma.SR) ~ ma.decimal);
-osc(freq, amp) = sin(phasor(freq)*2*ma.PI)*amp;
-vibrato = 1+ osc(vib, vibWid);
+//sine
+osc(freq, amp) = sin(phasor(freq)*2*ma.PI)*amp; 
+//AM
+am(freq, amt) = 1 - ((osc(freq,0.5)+0.5) * amt);
+//FM
+fm(freq, amt) = 1 + (osc(freq,amt));
+//partial
+partial(fund, ratio, amp) = sin(
+        phasor(fund*ratio*fm(vibratoHz, 
+        vibratoWidth*0.0022*ratio*ratio)
+    )*2*ma.PI)*amp;
 
-organ(freq) = (
-    no.noise*(0.01*vibrato):fi.highpass(10, 223):fi.lowpass(10,8000) +
-    osc(freq*vibrato+no.lfnoise(4410)*freq*0.03,   0.05*vibrato) + 
-    osc(freq*2*vibrato+no.lfnoise(4410)*freq*0.05, 0.2*vibrato) + 
-    osc(freq*3*vibrato+no.lfnoise(4410)*freq*0.06, 0.5*vibrato) + 
-    osc(freq*4*vibrato+no.lfnoise(4410)*freq*0.08, 0.04*vibrato) + 
-    osc(freq*5*vibrato+no.lfnoise(4410)*freq*0.1, 0.15*vibrato) + 
-    osc(freq*6*vibrato+no.lfnoise(4410)*freq*0.11, 0.05*vibrato) + 
-    osc(freq*7*vibrato+no.lfnoise(4410)*freq*0.13, 0.01*vibrato) +
-    osc(freq*8*vibrato+no.lfnoise(4410)*freq*0.15, 0.003*vibrato) + 
-    osc(freq*9*vibrato+no.lfnoise(4410)*freq*0.16, 0.001*vibrato) 
-)<:(_*0.7)+(_:fi.resonbp(223.08,1,1));
+oboe(fund, amp) = (
+    no.noise*0.03 +
+    partial(fund, 1.000, 0.260) +
+    partial(fund, 1.986, 1.080) +
+    partial(fund, 2.968, 0.080) +
+    partial(fund, 3.987, 0.100) +
+    partial(fund, 4.989, 0.040) +
+    partial(fund, 5.956, 0.010) +
+    partial(fund, 6.974, 0.010) +
+    partial(fund, 7.977, 0.005) 
 
-process = organ(f)/7;
+)*amp*am(vibratoHz, vibratoWidth); 
+
+
+
+process = oboe(fund, 0.1);
