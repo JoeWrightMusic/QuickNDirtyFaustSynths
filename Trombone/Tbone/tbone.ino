@@ -8,15 +8,23 @@ AudioConnection patchCord0(tbone,0,out,0);
 AudioConnection patchCord1(tbone,0,out,1);
 
 //set scale by distance from C3, where C3=1, C#3=2, D=3 etc.
-// for now, set scale to C harm minor
-int scale[8] = {1,3,4,6,8,9,12, 13};
+// for now, set scale to C lydian
+int scale[8] = {1,3,5,7,8,10,12, 13};
+
 //set how wide the slide can bend the quantised pitches
 // max=100, a full semitone
-int vibWidth = 10.0;
+int vibWidth = 15.0;
+
+//set slideyness of trombone 0-1
+// you don't need much!
+float slidey = 0.05;
 
 //Sensor Pin, A0
 int sensPin = 14; 
 int reading = 0;
+
+//gate
+int gate = 1;
 
 //PM Brass Mpdel parameters for b2-c4
 // These are the in-tune values, which are used in setup to 
@@ -68,10 +76,11 @@ int scaleDegree(int anlgVal){
 //VIBRATO: returns the distance from a scale
 // degree 'centre point' as +/- 'vibWidth', where 0 is in tune,
 // returns 0 in deadzones
-int vibrato(int anlgVal){
+float vibrato(int anlgVal){
   float tuning = (anlgVal%128)-30.0;
+  tuning = (tuning/30.0)*vibWidth;
   if(tuning<=30){
-      return int(tuning);
+      return tuning;
     }
   else{
       return 0;
@@ -81,28 +90,31 @@ int vibrato(int anlgVal){
 //TROMBONE: take analog read value, 
 // calculate SCALE DEGREE and VIBRATO and
 // set arguments for the brass physical model
-void trombone(int anlgVal){
+void trombone(int anlgVal, int gate){
   int note = scaleDegree(anlgVal);
-  int vib = vibrato(anlgVal);
+  float vib = vibrato(anlgVal);
   if(note!=-1){
       //use these values to get an index on lookup tables
-      note = (scale[note]*100)+vib;
+      note = (scale[note]*100)+int(vib);
+      vib = (vib/vibWidth)*0.2;
       //then set tbone parameters
       tbone.setParamValue("length", tube[note]);
       tbone.setParamValue("lipsTension", lip[note]);
       tbone.setParamValue("pressure", prss[note]);
+      tbone.setParamValue("vib", vib);
     }
+  tbone.setParamValue("toneGate", gate);
   }
 
 
-void setup() {
-  Serial.begin(9600);   
+void setup() {  
   AudioMemory(200);
   audioShield.enable();
   audioShield.volume(0.01);
-  tbone.setParamValue("vibratoHz", 3);
-  tbone.setParamValue("vibratoWidth", 0.01);
-  tbone.setParamValue("vol", 2);
+  tbone.setParamValue("autoVibHz", 3);
+  tbone.setParamValue("autoVibWidth", 0.01);
+  tbone.setParamValue("vol", 1);
+  tbone.setParamValue("smoo", 0.05);
 
   //create lookup table, 100 values between 1/2 tone
   for(int i=0; i<25; i++){
@@ -123,11 +135,7 @@ void setup() {
   }
 }
 
-
 void loop() {
   reading = analogRead(sensPin);
-  trombone(reading);
-  Serial.print(scaleDegree(reading));
-  Serial.print("    ");
-  Serial.println(vibrato(reading));
+  trombone(reading, gate);
 }
