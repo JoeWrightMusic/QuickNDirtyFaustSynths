@@ -6,17 +6,19 @@ lipsTension = hslider("lipsTension",0.62,0,1,0.01);
 mute = hslider("mute",0,0,1,0.01);
 pressure = hslider("pressure",0.05,0,1,0.01);
 
-vol = hslider("vol",1,0,2,0.01);
+vol = hslider("vol",0.1,0,100,0.01);
 vibratoHz = hslider("vibratoHz", 4, 0, 10, 0.01);
 vibratoWidth = hslider("vibratoWidth", 0.15, 0, 1, 0.01);
+vib = hslider("vib.",0,-1,1,0.01);
 //phasor
 phasor(freq) = (+(freq/ma.SR) ~ ma.decimal);
 //sine
 osc(freq, amp) = sin(phasor(freq)*2*ma.PI)*amp; 
 
-trombone = pm.brassModel(tubeLength,lipsTension,mute,pressure);
-ampVib = vol+osc(vibratoHz, vibratoWidth);
-process = trombone*ampVib;
+
+ampVib = 1+(osc(vibratoHz, vibratoWidth));
+trombone = pm.brassModel(tubeLength+(vib*0.1),lipsTension,mute,(pressure+(vib*0.02))*ampVib);
+process = trombone*ampVib*vol;
 
 
 
