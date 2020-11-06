@@ -22,8 +22,8 @@
  
  ************************************************************************/
 
-#ifndef faust_Oboe_h_
-#define faust_Oboe_h_
+#ifndef faust_oboe_h_
+#define faust_oboe_h_
 
 #include <string>
 
@@ -38,12 +38,12 @@ class MidiUI;
 class teensy_midi;
 #endif
 
-class Oboe : public AudioStream
+class oboe : public AudioStream
 {
     public:
     
-        Oboe();
-        ~Oboe();
+        oboe();
+        ~oboe();
     
         virtual void update(void);
     
