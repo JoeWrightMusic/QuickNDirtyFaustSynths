@@ -6,6 +6,8 @@ fund = hslider("fundFreq", 60, 60, 72, 0.001):ba.midikey2hz;
 vibratoHz = hslider("vibratoHz", 4, 0, 10, 0.01)+(randomize(0.7));
 trigger = button("trigger");
 legatoTrigger = button("legatoTrig");
+loShelfFreq = hslider("loShelfFreq",1000,10,20000,1);
+loShelfGain = hslider("loShelfGain",-36,-64,64,0.1);
 
 randomize(amt)=no.sparse_noise(5)*amt+(amt)+(0.002);
 
@@ -70,4 +72,4 @@ oboe = oboeComponents:pm.modalModel(5,
     )
     )*0.01 +(no.noise*0.003*fastEnv1);
 
-process = oboe(fund, 0.1)<:_,_;
+process = oboe(fund, 0.1):fi.low_shelf(loShelfGain,loShelfFreq)<:_,_;

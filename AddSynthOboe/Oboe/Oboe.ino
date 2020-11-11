@@ -1,6 +1,5 @@
 #include <Audio.h>
 #include "Oboe.h"
-#define btSerial Serial4
 
 oboe oboe;
 AudioOutputI2S out;

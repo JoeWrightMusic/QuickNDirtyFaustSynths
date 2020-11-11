@@ -20,7 +20,8 @@ int vibWidth = 15.0;
 float slidey = 0.05;
 
 //Sensor Pin, A0
-int sensPin = 14; 
+int slidePin = 14; 
+int gatePin = 15;
 int reading = 0;
 
 //gate
@@ -137,5 +138,6 @@ void setup() {
 
 void loop() {
   reading = analogRead(sensPin);
+  gate = digitalRead(gatePin);
   trombone(reading, gate);
 }
