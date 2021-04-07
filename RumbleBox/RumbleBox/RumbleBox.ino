@@ -17,11 +17,11 @@ const float AMIN_VOL = 1;
 const float TECHNO_VOL = 1;
 const float COMP_DB = -25;
 //__________________________________________________________________LOAD CELL
-const float LOADCELL_SENSITIVITY = 2.5; // old sketch sensitivity == 1
+const float LOADCELL_SENSITIVITY = 2; // old sketch sensitivity == 1
 const int LOADCELL_DOUT_PIN = 3;
 const int LOADCELL_SCK_PIN = 4;
-int rangeMin=10;
-int rangeMax=110;
+int rangeMin=125;
+int rangeMax=225;
 int threshCount=0;
 int thresh=3;
 HX711 scale;
@@ -183,13 +183,13 @@ void readLoadCell(){
   if (scale.is_ready()) {
     float reading = scale.read();
     reading=reading*0.0001*LOADCELL_SENSITIVITY;
-    Serial.println(reading);
+//    Serial.println(reading);
     adjustRange(reading);
     //Apply Range Tracking
     reading = map(reading, rangeMin, rangeMax, 0.0, 200.0);
     reading = constrain(reading, 0.0, 200.0);
     reading = reading/200.0;
-    Serial.println(reading);
+//    Serial.println(reading);
     //Use value to control Synth parameters...
     setSynth(reading);
   } 

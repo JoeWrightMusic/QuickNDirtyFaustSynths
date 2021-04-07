@@ -9,11 +9,13 @@ aMinDist = hslider("aMinDist",0.01,0,1,0.001);
 techno = hslider("techno",0,0,1,0.01):si.smoo;
 setPip = hslider("setPip",81, 80,110,1);
 pipVol = hslider("pipVol",0.03, 0,10,0.01);
-kickVol = hslider("kickVol",1.2,0,10,0.01);
-rscal = hslider("rscal",0.2, 0,1,0.01);
-mvol = hslider("mvol",0,0,1,0.01);
-mcomp = hslider("mcomp",-10,-50,0,0.01);
-mcompra = hslider("mcompra",100,1,100,0.01);
+pipLP = hslider("pipLP",800,5,800,0.01);
+pipDist = hslider("pipDist",0.01,0,1,0.001);
+kickVol = hslider("kickVol",1.2,0,10,0.01):si.smoo;
+rscal = hslider("rscal",0.2, 0,1,0.01):si.smoo;
+mvol = hslider("mvol",0,0,1,0.01):si.smoo;
+mcomp = hslider("mcomp",-10,-50,0,0.01):si.smoo;
+mcompra = hslider("mcompra",100,1,100,0.01):si.smoo;
 kikSpd = hslider("kikSpd",0.1,0.1,2,0.01);
 
 // //WOBWOB
@@ -62,14 +64,14 @@ timePip(note, freq, thresh) =
     ;
 timePips=(
     timePip(pipNote, kickFreq*4, 0.8)
-)*pipVol; 
+):ef.cubicnl(pipDist,0):fi.lowpass3e(pipLP)*pipVol; 
 
 technoL = kick*kickVol:co.compressor_mono(100,-5,0.005,0.01)*techno:fi.lowpass3e(500);
-technoR = (timePips+(technoL*0.5)):co.compressor_mono(100,-5,0.005,0.01)*techno;
+technoR = (timePips+(technoL)):co.compressor_mono(100,-5,0.005,0.01)*techno;
 
 
 //OUTPUT
 left = technoL + (aMinor + (wobWobOut)) : co.compressor_mono(mcompra, mcomp, 0.01,0.02)*mvol; //+ wobWobOut;
-right = (technoR+ (aMinor*0.5))*rscal : co.compressor_mono(mcompra, mcomp, 0.01,0.02)*mvol;
+right = (technoR+ (aMinor*0.5)+ (wobWobOut))*rscal : co.compressor_mono(mcompra, mcomp, 0.01,0.02)*mvol;
 // process = left*mvol,right*mvol;
 process = left,right;
