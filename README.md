@@ -25,11 +25,11 @@ A basic oboe sound made using a mix of additive & subtractive synthesis.
 A Sketch using the FAUST brass physical model to approximate a trombone. 
 The accompanying lookup tables give all the parameters for the notes C3-B3.
 ---
-## RUMBLE BOX
+## RUMBLE BOX (for Oily Cart)
 Sounds designed for an interactive instrument designed with Oily Cart theatre company for the show, Space to Be
 
 ### RumbleBox V.1.1
 First version of the instrument touring in early 2021
 
 ### RumbleBox V.2.0
-Early summer update of the instrument
+Early summer 2021 update of the instrument
