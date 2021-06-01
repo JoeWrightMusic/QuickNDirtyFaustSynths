@@ -1,3 +1,5 @@
+import("stdfaust.lib");
+
 //____________________________________________________________________________________KICK / DRONE-GLISS
 trig = button("trig");
 rampT = hslider("rampT", 0.1, 0, 20, 0.01);
@@ -12,5 +14,5 @@ env = en.ar(att, rel, trig);
 
 krone = os.triangle(line)*env;
 
-process = krone*0.1;
+process = krone;
 

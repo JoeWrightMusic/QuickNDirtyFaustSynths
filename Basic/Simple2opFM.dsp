@@ -2,8 +2,8 @@ import("stdfaust.lib");
 //____________________________________________________________________________________FM2OSC
 trig = button("trig");
 freq = hslider("freq",200,10,20000,0.01):si.smoo;
-mMul = hslider("mMul",0.5,0.01,1000,0.01):si.smoo;
-dMul = hslider("dMul",0.5,0.001,100,0.01):si.smoo;
+mMul = hslider("mMul",0.5,0.01,100,0.01):si.smoo;
+dMul = hslider("dMul",0.5,0.001,10,0.01):si.smoo;
 
 aM = hslider("aM",0.1,0.01,10,0.01);
 dM = hslider("dM",0.1,0.01,10,0.01);
@@ -17,7 +17,7 @@ rC = hslider("rC",0.1,0.01,10,0.01);
 
 fm2op(freq,mMul,dMul,trig, am,dm,sm,rm, ac,dc,sc,rc) =  
 os.osc(
-        220+(os.osc(freq*mMul)*freq*dMul*en.adsr(am,dm,sm,rm,1))
+        freq+(os.osc(freq*mMul)*freq*dMul*en.adsr(am,dm,sm,rm,trig))
 )*en.adsr(ac,dc,sc,rc, trig);
 
 process = fm2op(freq,mMul,dMul,trig, aM,dM,sM,rM, aC,dC,sC,rC);
