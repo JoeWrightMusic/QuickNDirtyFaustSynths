@@ -14,4 +14,4 @@ switchRampT = rampT*trig;
 line = darkness+(freqDelta*trig):si.smooth(ba.tau2pole(switchRampT));
 env = en.ar(att, rel, trig);
 
-process = no.noise:fi.fi.resonlp(line,5,0.5)*env;
+process = no.noise:fi.resonlp(line,5,0.5)*env;
